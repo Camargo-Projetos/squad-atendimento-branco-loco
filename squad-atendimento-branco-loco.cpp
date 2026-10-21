@@ -60,14 +60,23 @@ struct PilhaHistorico {
     No* topo = nullptr;
 
     void push(const string& nome) {
+        No* novo = new No(nome);
+        novo->prox = topo;
+        topo = novo;
     }
 
     string pop() {
-        return "";
+        if (isEmpty()) return "";
+        No* temp = topo;
+        string nome = temp->nome;
+        topo = topo->prox;
+        delete temp;
+        return nome;
     }
 
     string peek() const {
-        return "";
+        if (isEmpty()) return "";
+        return topo->nome;
     }
 
     bool isEmpty() const { return topo == nullptr; }
