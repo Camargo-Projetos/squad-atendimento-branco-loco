@@ -155,7 +155,7 @@ void imprimirHistorico(PilhaHistorico& hist) {
 
 int main() {
     cout << "╔═══════════════════════════════════════════════════╗\n";
-    cout << "║  Sistema de Atendimento — Squad ________________  ║\n";
+    cout << "║  Sistema de Atendimento — Squad Branco loco       ║\n";
     cout << "╚═══════════════════════════════════════════════════╝\n\n";
 
     FilaPacientes  fila;
