@@ -90,15 +90,38 @@ struct ListaMedicos {
     No* head = nullptr;
 
     void adicionarMedico(const string& nome) {
+        No* novo = new No(nome);
+        if (head == nullptr) {
+            head = novo;
+            return;
+        }
+        No* p = head;
+        while (p->prox != nullptr) p = p->prox;
+        p->prox = novo;
     }
 
     string chamarMedico() {
-        return "";
+        if (head == nullptr) return "";
+        No* temp = head;
+        string nome = temp->nome;
+        head = head->prox;
+        delete temp;
+        return nome;
     }
 
     void percorrer(const string& prefixo = "") const {
         if (!prefixo.empty()) cout << prefixo << ": ";
-        cout << "(lista vazia)\n";
+        if (head == nullptr) {
+            cout << "(lista vazia)\n";
+            return;
+        }
+        No* p = head;
+        while (p != nullptr) {
+            cout << p->nome;
+            if (p->prox != nullptr) cout << " -> ";
+            p = p->prox;
+        }
+        cout << "\n";
     }
 
     bool temMedico() const { return head != nullptr; }
@@ -153,6 +176,7 @@ int main() {
              << " atende " << paciente << "\n";
 
         historico.push(medico + " → " + paciente);
+        medicos.adicionarMedico(medico);
     }
 
     cout << "\nÚltimo atendimento registrado (peek): " << historico.peek() << "\n";
