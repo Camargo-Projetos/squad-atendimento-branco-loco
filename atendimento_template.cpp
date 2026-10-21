@@ -2,20 +2,23 @@
 #include <string>
 using namespace std;
 
+// no usado por fila, pilha e lista
 struct No {
     string nome;
     int    urgencia;
-    No*    prox;
+    No*    prox;  // proximo no
     No(const string& n, int u = 0) : nome(n), urgencia(u), prox(nullptr) {}
 };
 
+// fifo, primeiro que entra, primeiro que sai
 struct FilaPacientes {
     No* frente = nullptr;
     No* tras   = nullptr;
 
+    //Entra na fila
     void enqueue(const string& nome, int urgencia) {
         No* novo = new No(nome, urgencia);
-        if (tras == nullptr) {
+        if (tras == nullptr) {   // fila vazia
             frente = novo;
             tras = novo;
         } else {
@@ -24,16 +27,18 @@ struct FilaPacientes {
         }
     }
 
+    //Sair da fila (ser atendido)
     string dequeue() {
         if (isEmpty()) return "";
         No* temp = frente;
         string nome = temp->nome;
         frente = frente->prox;
-        if (frente == nullptr) tras = nullptr;
+        if (frente == nullptr) tras = nullptr;  // fila vazia
         delete temp;
         return nome;
     }
 
+    // ve o primeiro sem remover
     string frente_peek() const {
         if (isEmpty()) return "";
         return frente->nome;
@@ -41,6 +46,7 @@ struct FilaPacientes {
 
     bool isEmpty() const { return frente == nullptr; }
 
+    // conta os pacientes
     int tamanho() const {
         int cont = 0;
         No* p = frente;
@@ -56,6 +62,7 @@ struct FilaPacientes {
     }
 };
 
+// lifo,  ultimo que entra, primeiro que sai
 struct PilhaHistorico {
     No* topo = nullptr;
 
@@ -74,6 +81,7 @@ struct PilhaHistorico {
         return nome;
     }
 
+    // ve o topo sem remover
     string peek() const {
         if (isEmpty()) return "";
         return topo->nome;
@@ -86,9 +94,11 @@ struct PilhaHistorico {
     }
 };
 
+// lista dos medicos
 struct ListaMedicos {
     No* head = nullptr;
 
+    // adiciona no final
     void adicionarMedico(const string& nome) {
         No* novo = new No(nome);
         if (head == nullptr) {
@@ -96,10 +106,11 @@ struct ListaMedicos {
             return;
         }
         No* p = head;
-        while (p->prox != nullptr) p = p->prox;
+        while (p->prox != nullptr) p = p->prox;  // vai ate o ultimo
         p->prox = novo;
     }
 
+    // tira o primeiro da lista
     string chamarMedico() {
         if (head == nullptr) return "";
         No* temp = head;
@@ -109,6 +120,7 @@ struct ListaMedicos {
         return nome;
     }
 
+    // imprime a lista
     void percorrer(const string& prefixo = "") const {
         if (!prefixo.empty()) cout << prefixo << ": ";
         if (head == nullptr) {
@@ -135,6 +147,7 @@ struct ListaMedicos {
     }
 };
 
+// imprime o historico usando uma pilha auxiliar pra nao perder os dados
 void imprimirHistorico(PilhaHistorico& hist) {
     cout << "\n=== Relatório de Atendimentos ===\n";
     if (hist.isEmpty()) {
@@ -143,11 +156,13 @@ void imprimirHistorico(PilhaHistorico& hist) {
     }
     PilhaHistorico aux;
     int i = 1;
+    // passa tudo pra aux imprimindo
     while (!hist.isEmpty()) {
         string item = hist.pop();
         cout << "  " << i++ << ". " << item << "\n";
         aux.push(item);
     }
+    // devolve pro historico
     while (!aux.isEmpty()) {
         hist.push(aux.pop());
     }
@@ -162,11 +177,13 @@ int main() {
     PilhaHistorico historico;
     ListaMedicos   medicos;
 
+    // cadastro dos medicos
     medicos.adicionarMedico("Dra. Ana Lima");
     medicos.adicionarMedico("Dr. Bruno Costa");
     medicos.adicionarMedico("Dra. Carla Ramos");
     medicos.percorrer("Médicos disponíveis");
 
+    // chegada dos pacientes
     cout << "\nPacientes chegando:\n";
     fila.enqueue("Eduardo (urgencia=3)", 3);
     fila.enqueue("Fernanda (urgencia=1)", 1);
@@ -176,6 +193,7 @@ int main() {
     cout << "Próximo a ser atendido: " << fila.frente_peek() << "\n";
     cout << "Total na fila: " << fila.tamanho() << "\n";
 
+    // atendimentos
     cout << "\nSimulação de atendimentos:\n";
     int atend = 1;
     while (!fila.isEmpty() && medicos.temMedico()) {
@@ -186,7 +204,7 @@ int main() {
              << " atende " << paciente << "\n";
 
         historico.push(medico + " → " + paciente);
-        medicos.adicionarMedico(medico);
+        medicos.adicionarMedico(medico);  // volta pro final da lista
     }
 
     cout << "\nÚltimo atendimento registrado (peek): " << historico.peek() << "\n";
