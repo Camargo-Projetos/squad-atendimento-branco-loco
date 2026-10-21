@@ -141,6 +141,16 @@ void imprimirHistorico(PilhaHistorico& hist) {
         cout << "(nenhum atendimento registrado)\n";
         return;
     }
+    PilhaHistorico aux;
+    int i = 1;
+    while (!hist.isEmpty()) {
+        string item = hist.pop();
+        cout << "  " << i++ << ". " << item << "\n";
+        aux.push(item);
+    }
+    while (!aux.isEmpty()) {
+        hist.push(aux.pop());
+    }
 }
 
 int main() {
@@ -182,6 +192,7 @@ int main() {
     cout << "\nÚltimo atendimento registrado (peek): " << historico.peek() << "\n";
 
     imprimirHistorico(historico);
+    cout << "\nHistórico preservado. Topo atual: " << historico.peek() << "\n";
 
     return 0;
 }
